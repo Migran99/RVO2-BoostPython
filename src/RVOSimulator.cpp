@@ -76,7 +76,6 @@ namespace RVO {
 
 		delete kdTree_;
 	}
-
 	size_t RVOSimulator::addAgent(const Vector2 &position)
 	{
 		if (defaultAgent_ == NULL) {
@@ -119,6 +118,62 @@ namespace RVO {
 		agents_.push_back(agent);
 
 		return agents_.size() - 1;
+	}
+
+	size_t RVOSimulator::addAgent0(const Vector2 &position)
+	{
+		if (defaultAgent_ == NULL) {
+			return RVO_ERROR;
+		}
+
+		Agent *agent = new Agent(this);
+
+		agent->position_ = position;
+		agent->maxNeighbors_ = defaultAgent_->maxNeighbors_;
+		agent->maxSpeed_ = defaultAgent_->maxSpeed_;
+		agent->neighborDist_ = defaultAgent_->neighborDist_;
+		agent->radius_ = defaultAgent_->radius_;
+		agent->timeHorizon_ = defaultAgent_->timeHorizon_;
+		agent->timeHorizonObst_ = defaultAgent_->timeHorizonObst_;
+		agent->velocity_ = defaultAgent_->velocity_;
+
+		agent->id_ = agents_.size();
+
+		agents_.push_back(agent);
+
+		return agents_.size() - 1;
+	}
+
+	size_t RVOSimulator::addAgent1(const Vector2 &position, float neighborDist, size_t maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed, const Vector2 &velocity)
+	{
+		Agent *agent = new Agent(this);
+
+		agent->position_ = position;
+		agent->maxNeighbors_ = maxNeighbors;
+		agent->maxSpeed_ = maxSpeed;
+		agent->neighborDist_ = neighborDist;
+		agent->radius_ = radius;
+		agent->timeHorizon_ = timeHorizon;
+		agent->timeHorizonObst_ = timeHorizonObst;
+		agent->velocity_ = velocity;
+
+		agent->id_ = agents_.size();
+
+		agents_.push_back(agent);
+
+		return agents_.size() - 1;
+	}
+
+	size_t RVOSimulator::addObstacleFromPython(boost::python::list& ns)
+	{
+		std::vector<RVO::Vector2> obs;
+		for (int i = 0; i < len(ns); ++i)
+	    {
+	    	RVO::Vector2 v=boost::python::extract<Vector2>(ns[i]);
+	    	// std::cout << "v.x=" << v.x() << ", v.y=" << v.y() << std::endl;
+	        obs.push_back(v);
+	    }
+	    return this->addObstacle(obs);
 	}
 
 	size_t RVOSimulator::addObstacle(const std::vector<Vector2> &vertices)

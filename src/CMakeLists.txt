@@ -45,11 +45,25 @@ set(RVO_SOURCES
 	Obstacle.h
 	RVOSimulator.cpp)
 
-add_library(RVO ${RVO_HEADERS} ${RVO_SOURCES})
+find_package(PythonLibs 3.8 REQUIRED)
+find_package(Boost COMPONENTS python REQUIRED)
+
+# Without this, any build libraries automatically have names "lib{x}.so"
+set(CMAKE_SHARED_MODULE_PREFIX "")
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+add_library(RVO SHARED ${RVO_HEADERS} ${RVO_SOURCES})
+target_link_libraries(RVO ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+target_include_directories(RVO PRIVATE ${PYTHON_INCLUDE_DIRS})
 
 if(WIN32)
     set_target_properties(RVO PROPERTIES COMPILE_DEFINITIONS NOMINMAX)
 endif()
+
+add_library(pyrvo2 MODULE pyrvo2_module.cpp)
+target_link_libraries(pyrvo2 RVO ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+target_include_directories(pyrvo2 PRIVATE ${PYTHON_INCLUDE_DIRS})
 
 install(FILES ${RVO_HEADERS} DESTINATION include)
 install(TARGETS RVO DESTINATION lib)

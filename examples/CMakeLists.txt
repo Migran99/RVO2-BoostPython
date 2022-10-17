@@ -29,18 +29,23 @@
 #
 # <http://gamma.cs.unc.edu/RVO2/>
 #
+find_package(PythonLibs 3.8 REQUIRED)
+find_package(Boost COMPONENTS python REQUIRED)
 
 include_directories(${RVO_SOURCE_DIR}/src)
 
 add_executable(Blocks Blocks.cpp)
 target_link_libraries(Blocks RVO)
+target_include_directories(Blocks PRIVATE ${PYTHON_INCLUDE_DIRS})
 add_test(Blocks Blocks)
 
 add_executable(Circle Circle.cpp)
+target_include_directories(Circle PRIVATE ${PYTHON_INCLUDE_DIRS})
 target_link_libraries(Circle RVO)
 add_test(Circle Circle)
 
 add_executable(Roadmap Roadmap.cpp)
+target_include_directories(Roadmap PRIVATE ${PYTHON_INCLUDE_DIRS})
 target_link_libraries(Roadmap RVO)
 add_test(Roadmap Roadmap)
 

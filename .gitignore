@@ -15,3 +15,7 @@
 # Python & Cython-generated files
 build/
 src/rvo2.cpp
+
+
+.vscode
+build

@@ -41,7 +41,7 @@
 #include <cstddef>
 #include <limits>
 #include <vector>
-
+#include <boost/python.hpp>
 #include "Vector2.h"
 
 namespace RVO {
@@ -190,6 +190,65 @@ namespace RVO {
 						size_t maxNeighbors, float timeHorizon,
 						float timeHorizonObst, float radius, float maxSpeed,
 						const Vector2 &velocity = Vector2());
+
+		/**
+		 * \brief      Adds a new agent with default properties to the
+		 *             simulation.
+		 * \param      position        The two-dimensional starting position of
+		 *                             this agent.
+		 * \return     The number of the agent, or RVO::RVO_ERROR when the agent
+		 *             defaults have not been set.
+		 */
+		size_t addAgent0(const Vector2 &position);
+
+		/**
+		 * \brief      Adds a new agent to the simulation.
+		 * \param      position        The two-dimensional starting position of
+		 *                             this agent.
+		 * \param      neighborDist    The maximum distance (center point to
+		 *                             center point) to other agents this agent
+		 *                             takes into account in the navigation. The
+		 *                             larger this number, the longer the running
+		 *                             time of the simulation. If the number is too
+		 *                             low, the simulation will not be safe.
+		 *                             Must be non-negative.
+		 * \param      maxNeighbors    The maximum number of other agents this
+		 *                             agent takes into account in the navigation.
+		 *                             The larger this number, the longer the
+		 *                             running time of the simulation. If the
+		 *                             number is too low, the simulation will not
+		 *                             be safe.
+		 * \param      timeHorizon     The minimal amount of time for which this
+		 *                             agent's velocities that are computed by the
+		 *                             simulation are safe with respect to other
+		 *                             agents. The larger this number, the sooner
+		 *                             this agent will respond to the presence of
+		 *                             other agents, but the less freedom this
+		 *                             agent has in choosing its velocities.
+		 *                             Must be positive.
+		 * \param      timeHorizonObst The minimal amount of time for which this
+		 *                             agent's velocities that are computed by the
+		 *                             simulation are safe with respect to
+		 *                             obstacles. The larger this number, the
+		 *                             sooner this agent will respond to the
+		 *                             presence of obstacles, but the less freedom
+		 *                             this agent has in choosing its velocities.
+		 *                             Must be positive.
+		 * \param      radius          The radius of this agent.
+		 *                             Must be non-negative.
+		 * \param      maxSpeed        The maximum speed of this agent.
+		 *                             Must be non-negative.
+		 * \param      velocity        The initial two-dimensional linear velocity
+		 *                             of this agent (optional).
+		 * \return     The number of the agent.
+		 */
+		size_t addAgent1(const Vector2 &position, float neighborDist,
+						size_t maxNeighbors, float timeHorizon,
+						float timeHorizonObst, float radius, float maxSpeed,
+						const Vector2 &velocity = Vector2());
+
+		//via http://stackoverflow.com/questions/3761391/boostpython-python-list-to-stdvector
+		size_t addObstacleFromPython(boost::python::list& ns);
 
 		/**
 		 * \brief      Adds a new obstacle to the simulation.
